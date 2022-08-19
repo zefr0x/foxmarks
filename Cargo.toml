@@ -1,0 +1,20 @@
+[package]
+name = "foxmarks"
+version = "0.1.0"
+authors = ["zer0-x"]
+edition = "2021"
+description = "A CLI read-only interface for firefox's bookmarks and history."
+readme = "README.md"
+homepage = "https://github.com/zer0-x/foxmarks"
+repository = "https://github.com/zer0-x/foxmarks.git"
+license = "GPL-3.0"
+keywords = ["firefox", "bookmarks", "history", "cli"]
+categories = ["command-line-utilities", "database-implementations"]
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+sqlite = "0.27.0"
+tempfile = "3.3.0"
+configparser = "3.0.1"
+# TODO: Find a good cli arg parsing library.

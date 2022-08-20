@@ -86,15 +86,17 @@ fn get_database_connection(
 pub fn fetch_bookmarks(
     firefox_type: u8,
     custom_profile_id: Option<String>,
-    column_delimiter: &str,
-    row_delimiter: &str,
+    column_delimiter: String,
+    row_delimiter: String,
 ) {
     let (database_connection, temp_database) =
         get_database_connection(firefox_type, custom_profile_id);
 
     let mut cursor = database_connection
         .prepare(
-            "SELECT A.title, B.url FROM moz_bookmarks AS A JOIN moz_places AS B ON(A.fk = B.id);",
+            "SELECT A.title, B.url
+                FROM moz_bookmarks AS A JOIN moz_places AS B ON(A.fk = B.id)
+                    ORDER BY B.visit_count DESC, A.lastModified DESC;",
         )
         .unwrap()
         .into_cursor();
@@ -114,7 +116,7 @@ pub fn fetch_bookmarks(
                 Err(_) => continue,
             },
             match row.try_get::<String, _>(1) {
-                Ok(name) => name,
+                Ok(url) => url,
                 Err(_) => continue,
             }
         );
@@ -126,13 +128,41 @@ pub fn fetch_bookmarks(
 pub fn fetch_history(
     firefox_type: u8,
     custom_profile_id: Option<String>,
-    column_delimiter: &str,
-    row_delimiter: &str,
+    column_delimiter: String,
+    row_delimiter: String,
 ) {
     let (database_connection, temp_database) =
         get_database_connection(firefox_type, custom_profile_id);
 
-    todo!();
+    let mut cursor = database_connection
+        .prepare(
+            "SELECT B.title, B.url
+                FROM moz_historyvisits AS A JOIN moz_places AS B ON(A.place_id = B.id)
+                    ORDER BY A.visit_date DESC, B.visit_count DESC;"
+        )
+        .unwrap()
+        .into_cursor();
+
+    loop {
+        let row: sqlite::Row = match cursor.next() {
+            Some(thing) => match thing {
+                Ok(row) => row,
+                Err(_) => continue,
+            },
+            None => break,
+        };
+        print!(
+            "{}{column_delimiter}{}{row_delimiter}",
+            match row.try_get::<String, _>(0) {
+                Ok(title) => title,
+                Err(_) => continue,
+            },
+            match row.try_get::<String, _>(1) {
+                Ok(url) => url,
+                Err(_) => continue,
+            }
+        );
+    }
 
     temp_database.close().unwrap();
 }

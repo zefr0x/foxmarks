@@ -1,3 +1,4 @@
-fn main() {
+mod database;
 
+fn main() {
 }

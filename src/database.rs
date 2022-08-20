@@ -1,8 +1,6 @@
-use std::fs::copy;
 use std::path::PathBuf;
 use std::string::String;
 
-use configparser::ini::Ini;
 use tempfile::NamedTempFile;
 
 struct Row {
@@ -28,7 +26,7 @@ fn get_database_location(firefox_type: u8, custom_profile_id: Option<String>) ->
     }
     .join(".mozilla/firefox");
 
-    let mut profiles = Ini::new();
+    let mut profiles = configparser::ini::Ini::new();
     profiles
         .load(firefox_home_dir.join("profiles.ini"))
         .unwrap();
@@ -69,7 +67,7 @@ fn get_temp_database(database_location: PathBuf) -> NamedTempFile {
     let temp_database_file = NamedTempFile::new().unwrap();
 
     // Copy the whole database file to a temp file.
-    copy(database_location.as_path(), temp_database_file.path()).unwrap();
+    std::fs::copy(database_location.as_path(), temp_database_file.path()).unwrap();
 
     return temp_database_file;
 }
@@ -108,14 +106,13 @@ pub fn fetch_bookmarks(
         )
         .unwrap();
 
-    let row_iter = statement
-        .query_map([], |row| {
-            Ok(Row {
-                // Return the value if exists, if not, a default String (empty string).
-                title: row.get(0).unwrap_or_default(),
-                url: row.get(1).unwrap_or_default(),
-            })
-        });
+    let row_iter = statement.query_map([], |row| {
+        Ok(Row {
+            // Return the value if exists, if not, a default String (empty string).
+            title: row.get(0).unwrap_or_default(),
+            url: row.get(1).unwrap_or_default(),
+        })
+    });
 
     for row in row_iter.unwrap() {
         let row = row.unwrap();

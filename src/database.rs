@@ -5,6 +5,11 @@ use std::string::String;
 use configparser::ini::Ini;
 use tempfile::NamedTempFile;
 
+struct Row {
+    title: String,
+    url: String,
+}
+
 /// Returns a PathBuf for the selected profile places database file.
 /// It will search for a default profile for the selected type or you can use a custom one.
 ///
@@ -73,14 +78,17 @@ fn get_temp_database(database_location: PathBuf) -> NamedTempFile {
 fn get_database_connection(
     firefox_type: u8,
     custom_profile_id: Option<String>,
-) -> (sqlite::Connection, NamedTempFile) {
+) -> (rusqlite::Connection, NamedTempFile) {
     let database_location = get_database_location(firefox_type, custom_profile_id);
 
     let temp_database = get_temp_database(database_location);
 
     // Return temp_database, so it will be in the scope and the temp file will not be deleted.
     // We need it also to close it at the end properly.
-    return (sqlite::open(temp_database.path()).unwrap(), temp_database);
+    return (
+        rusqlite::Connection::open(temp_database.path()).unwrap(),
+        temp_database,
+    );
 }
 
 pub fn fetch_bookmarks(
@@ -92,34 +100,26 @@ pub fn fetch_bookmarks(
     let (database_connection, temp_database) =
         get_database_connection(firefox_type, custom_profile_id);
 
-    let mut cursor = database_connection
+    let mut statement = database_connection
         .prepare(
             "SELECT A.title, B.url
                 FROM moz_bookmarks AS A JOIN moz_places AS B ON(A.fk = B.id)
                     ORDER BY B.visit_count DESC, A.lastModified DESC;",
         )
-        .unwrap()
-        .into_cursor();
+        .unwrap();
 
-    loop {
-        let row: sqlite::Row = match cursor.next() {
-            Some(thing) => match thing {
-                Ok(row) => row,
-                Err(_) => continue,
-            },
-            None => break,
-        };
-        print!(
-            "{}{column_delimiter}{}{row_delimiter}",
-            match row.try_get::<String, _>(0) {
-                Ok(name) => name,
-                Err(_) => continue,
-            },
-            match row.try_get::<String, _>(1) {
-                Ok(url) => url,
-                Err(_) => continue,
-            }
-        );
+    let row_iter = statement
+        .query_map([], |row| {
+            Ok(Row {
+                // Return the value if exists, if not, a default String (empty string).
+                title: row.get(0).unwrap_or_default(),
+                url: row.get(1).unwrap_or_default(),
+            })
+        });
+
+    for row in row_iter.unwrap() {
+        let row = row.unwrap();
+        print!("{}{column_delimiter}{}{row_delimiter}", row.title, row.url)
     }
 
     temp_database.close().unwrap();
@@ -134,34 +134,27 @@ pub fn fetch_history(
     let (database_connection, temp_database) =
         get_database_connection(firefox_type, custom_profile_id);
 
-    let mut cursor = database_connection
+    let mut statement = database_connection
         .prepare(
             "SELECT B.title, B.url
                 FROM moz_historyvisits AS A JOIN moz_places AS B ON(A.place_id = B.id)
-                    ORDER BY A.visit_date DESC, B.visit_count DESC;"
+                    ORDER BY A.visit_date DESC, B.visit_count DESC;",
         )
-        .unwrap()
-        .into_cursor();
+        .unwrap();
 
-    loop {
-        let row: sqlite::Row = match cursor.next() {
-            Some(thing) => match thing {
-                Ok(row) => row,
-                Err(_) => continue,
-            },
-            None => break,
-        };
-        print!(
-            "{}{column_delimiter}{}{row_delimiter}",
-            match row.try_get::<String, _>(0) {
-                Ok(title) => title,
-                Err(_) => continue,
-            },
-            match row.try_get::<String, _>(1) {
-                Ok(url) => url,
-                Err(_) => continue,
-            }
-        );
+    let row_iter = statement
+        .query_map([], |row| {
+            Ok(Row {
+                // Return the value if exists, if not, a default String (empty string).
+                title: row.get(0).unwrap_or_default(),
+                url: row.get(1).unwrap_or_default(),
+            })
+        })
+        .unwrap();
+
+    for row in row_iter {
+        let row = row.unwrap();
+        print!("{}{column_delimiter}{}{row_delimiter}", row.title, row.url)
     }
 
     temp_database.close().unwrap();

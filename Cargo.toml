@@ -17,4 +17,5 @@ categories = ["command-line-utilities", "database-implementations"]
 sqlite = "0.27.0"
 tempfile = "3.3.0"
 configparser = "3.0.1"
+dirs = "4.0.0"
 # TODO: Find a good cli arg parsing library.

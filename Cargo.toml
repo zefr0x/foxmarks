@@ -18,4 +18,4 @@ rusqlite = "0.28.0"
 tempfile = "3.3.0"
 configparser = "3.0.1"
 dirs = "4.0.0"
-# TODO: Find a good cli arg parsing library.
+clap = "3.2.17"

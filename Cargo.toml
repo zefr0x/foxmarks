@@ -10,6 +10,7 @@ repository = "https://github.com/zer0-x/foxmarks.git"
 license = "GPL-3.0"
 keywords = ["firefox", "bookmarks", "history", "cli"]
 categories = ["command-line-utilities", "database-implementations"]
+build = "build.rs"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
@@ -19,3 +20,7 @@ tempfile = "3.3.0"
 configparser = "3.0.1"
 dirs = "4.0.0"
 clap = "3.2.17"
+
+[build-dependencies]
+clap = "3.2.17"
+clap_complete = "3.2.4"

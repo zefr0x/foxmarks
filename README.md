@@ -9,6 +9,26 @@ A blazingly fast, highly extendable and easily integrated command line **read-on
 
 ## Installation
 
+### AUR
+Not available yet...
+
+### crates.io
+Not available yet...
+
+## Build
+> **Note**
+> You need to have [`cargo`](https://doc.rust-lang.org/cargo/) installed in you system.
+
+```shell
+git clone https://github.com/zer0-x/foxmarks.git
+
+cd foxmarks
+
+cargo build --release
+```
+You will find the binary in `./target/release/foxmarks`
+
+
 ## Usage
 It's simple, for a list of your bookmarks run:
 ```shell

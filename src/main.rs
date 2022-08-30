@@ -34,11 +34,20 @@ fn main() {
 
     let row_delimiter = match matches.get_one::<String>("row-delimiter") {
         Some(delimiter) => delimiter.to_owned(),
-        // FIXME: The escape character is being escaped, so \n will be \\n.
         None => config_object
             .get("output", "row_delimiter")
             .unwrap_or(String::from("\n")),
     };
+
+    // TODO: Find better and more general way to do that.
+    let column_delimiter = column_delimiter
+        .replace("\\t", "\t")
+        .replace("\\n", "\n")
+        .replace("\\r", "\r");
+    let row_delimiter = row_delimiter
+        .replace("\\t", "\t")
+        .replace("\\n", "\n")
+        .replace("\\r", "\r");
 
     // Match subcommad, and set sub option if available.
     match matches.subcommand() {

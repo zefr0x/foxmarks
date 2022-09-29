@@ -54,7 +54,7 @@ fn get_database_location(firefox_type: u8, custom_profile_id: Option<String>) ->
 
     match profile_id {
         Some(profile_id) => return firefox_home_dir.join(profile_id).join("places.sqlite"),
-        None => panic!("Can't find a profile id."),
+        None => panic!("Can not find any suitable profile id for firefox type {firefox_type}"),
     }
 }
 

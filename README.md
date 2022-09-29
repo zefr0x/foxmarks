@@ -1,4 +1,9 @@
 # foxmarks
+
+![AUR version](https://img.shields.io/aur/version/foxmarks?label=AUR)
+<br>
+![AUR votes](https://img.shields.io/aur/votes/foxmarks?label=AUR%20votes)
+
 A blazingly fast, highly extendable and easily integrated command line **read-only** interface for [firefox](https://www.mozilla.org/firefox)'s bookmarks and history.
 
 ## Features
@@ -9,11 +14,11 @@ A blazingly fast, highly extendable and easily integrated command line **read-on
 
 ## Installation
 
-### AUR
-Not available yet...
-
-### crates.io
-Not available yet...
+### [AUR](https://aur.archlinux.org/packages/foxmarks)
+#### Using yay
+```shell
+yay -Sa foxmarks
+```
 
 ## Build
 > **Note**

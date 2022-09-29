@@ -3,7 +3,7 @@ use std::path::PathBuf;
 use clap::builder::NonEmptyStringValueParser;
 use clap::{Arg, ArgAction, Command};
 
-pub fn build_cli() -> Command<'static> {
+pub fn build_cli() -> Command {
     Command::new(env!("CARGO_PKG_NAME"))
         .about(env!("CARGO_PKG_DESCRIPTION"))
         // FIXME:

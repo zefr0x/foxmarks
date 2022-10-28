@@ -13,5 +13,5 @@ pub fn load(config_path: Option<&PathBuf>) -> Ini {
         config.load(config_path).unwrap();
     }
 
-    return config;
+    config
 }

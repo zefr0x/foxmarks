@@ -29,14 +29,14 @@ fn main() {
         Some(delimiter) => delimiter.to_owned(),
         None => config_object
             .get("output", "column_delimiter")
-            .unwrap_or(String::from(";")),
+            .unwrap_or_else(|| String::from(";")),
     };
 
     let row_delimiter = match matches.get_one::<String>("row-delimiter") {
         Some(delimiter) => delimiter.to_owned(),
         None => config_object
             .get("output", "row_delimiter")
-            .unwrap_or(String::from("\n")),
+            .unwrap_or_else(|| String::from("\n")),
     };
 
     // TODO: Find better and more general way to do that.

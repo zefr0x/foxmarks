@@ -53,7 +53,7 @@ fn get_database_location(firefox_type: u8, custom_profile_id: Option<String>) ->
     }
 
     match profile_id {
-        Some(profile_id) => return firefox_home_dir.join(profile_id).join("places.sqlite"),
+        Some(profile_id) => firefox_home_dir.join(profile_id).join("places.sqlite"),
         None => panic!("Can not find any suitable profile id for firefox type {firefox_type}"),
     }
 }
@@ -69,7 +69,7 @@ fn get_temp_database(database_location: PathBuf) -> NamedTempFile {
     // Copy the whole database file to a temp file.
     std::fs::copy(database_location.as_path(), temp_database_file.path()).unwrap();
 
-    return temp_database_file;
+    temp_database_file
 }
 
 /// Returns sqlite connection and the temp_database.

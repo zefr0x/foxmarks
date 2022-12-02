@@ -96,6 +96,8 @@ then
 fi
 ```
 
+> **Warning** This example script is very slow, you might use another language like Python for better implementaion.
+
 ## Config
 The default options might not fit your needs, so you can change them via a config file.
 

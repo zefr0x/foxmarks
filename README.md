@@ -14,6 +14,11 @@ A blazingly fast, highly extendable and easily integrated command line **read-on
 
 ## Installation
 
+### Download Binary From Github
+For every new release a Github workflow will build a binary in Github servers and will upload it as a release asset in Github releases.
+
+You can find the latest Github release [here](https://github.com/zer0-x/foxmarks/releases/latest) or the releases page [here](https://github.com/zer0-x/foxmarks/releases).
+
 ### [AUR](https://aur.archlinux.org/packages/foxmarks)
 #### Using yay
 ```shell
@@ -33,6 +38,9 @@ paru -Sa foxmarks
 git clone https://github.com/zer0-x/foxmarks.git
 
 cd foxmarks
+
+# Checkout to a release tag e.g. v1.0.0
+git checkout vx.x.x
 
 cargo build --release
 ```

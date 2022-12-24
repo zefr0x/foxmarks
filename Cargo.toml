@@ -20,10 +20,10 @@ strip = true
 [dependencies]
 rusqlite = "0.28.0"
 tempfile = "3.3.0"
-configparser = "3.0.1"
+configparser = "3.0.2"
 dirs = "4.0.0"
-clap = "4.0.2"
+clap = "4.0.32"
 
 [build-dependencies]
-clap = "4.0.2"
-clap_complete = "4.0.1"
+clap = "4.0.32"
+clap_complete = "4.0.7"

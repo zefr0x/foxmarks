@@ -132,7 +132,7 @@ dependencies = [
 
 [[package]]
 name = "foxmarks"
-version = "1.0.0"
+version = "1.0.1"
 dependencies = [
  "clap",
  "clap_complete",

@@ -39,7 +39,7 @@ git clone https://github.com/zer0-x/foxmarks.git
 
 cd foxmarks
 
-# Checkout to a release tag e.g. v1.0.0
+# Checkout to a release tag e.g. v1.0.1
 git checkout vx.x.x
 
 cargo build --release

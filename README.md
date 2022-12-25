@@ -1,7 +1,10 @@
 # foxmarks
 
-[![AUR version](https://img.shields.io/aur/version/foxmarks?label=AUR)](https://aur.archlinux.org/packages/foxmarks)
+[![release](https://github.com/zer0-x/foxmarks/actions/workflows/release.yml/badge.svg)](https://github.com/zer0-x/foxmarks/actions/workflows/release.yml)
+
 <br>
+
+[![AUR version](https://img.shields.io/aur/version/foxmarks?label=AUR)](https://aur.archlinux.org/packages/foxmarks)
 [![AUR votes](https://img.shields.io/aur/votes/foxmarks?label=AUR%20votes)](https://aur.archlinux.org/packages/foxmarks)
 
 A blazingly fast, highly extendable and easily integrated command line **read-only** interface for [firefox](https://www.mozilla.org/firefox)'s bookmarks and history.

@@ -92,12 +92,11 @@ You can integrate the tool with your favorate launcher, for example here is a sc
 if [[ $ROFI_RETV = 0 ]];
 then
     foxmarks bookmarks | {
-        while IFS= read -r line;
+        while read -r line;
         do
-            read title < <(echo $line | cut -f1 -d ";")
-            read url < <(echo $line | cut -f2 -d ";")
-
-            echo -en "$title\0icon\x1fbookmarks\x1fmeta\x1f$url\x1finfo\x1f$url\x1f\n"
+            IFS=";"
+            read -r title url <<< $line
+            printf "%s\0icon\x1fbookmarks\x1fmeta\x1f%s\x1finfo\x1f%s\x1f\n" $title $url $url
         done
     }
 
@@ -107,7 +106,7 @@ then
 fi
 ```
 
-> **Warning** This example script is very slow, you might use another language like Python for better implementaion.
+> **Warning** You might use another language like Python for better and faster implementaion.
 
 ## Config
 The default options might not fit your needs, so you can change them via a config file.

@@ -27,3 +27,4 @@ clap = "4.0.32"
 [build-dependencies]
 clap = "4.0.32"
 clap_complete = "4.0.7"
+clap_mangen = "0.2.7"

@@ -63,10 +63,11 @@ jobs:
           outdir="$(find '${{ env.TARGET_DIR }}' -name foxmarks-stamp -print0 | xargs -0 ls -t | head -n1 | xargs dirname)"
           staging="foxmarks-${{ needs.create-release.outputs.version }}-${{ matrix.target }}"
 
-          mkdir -p "$staging"/shell_completions
+          mkdir -p "$staging"/shell_completions "$staging"/man_pages
 
           cp {README.md,LICENSE,CHANGELOG.md} "$staging/"
-          cp "$outdir"/{foxmarks.bash,foxmarks.elv,foxmarks.fish,_foxmarks} "$staging/shell_completions/"
+          cp "$outdir"/shell_completions/* "$staging"/shell_completions/
+          cp "$outdir"/man_pages/* "$staging"/man_pages/
           cp "target/release/foxmarks" "$staging/"
 
           tar czf "$staging.tar.gz" "$staging"

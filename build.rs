@@ -1,6 +1,6 @@
 use std::env;
 use std::fs;
-use std::io::Error;
+use std::io::{Error, ErrorKind};
 use std::path::Path;
 
 use clap_complete::{generate_to, Shell};
@@ -26,16 +26,40 @@ fn main() -> Result<(), Error> {
 
     let mut cmd = build_cli();
 
+    // Create directory for shell completions
+    let completions_dir = outdir.join("shell_completions");
+    match fs::create_dir(&completions_dir) {
+        Ok(_) => {}
+        Err(error) => match error.kind() {
+            ErrorKind::AlreadyExists => {}
+            other_error => {
+                panic!("Can't create the directory, {:?}", other_error)
+            }
+        },
+    };
+
     // Generate shell completions
     for shell in [Shell::Bash, Shell::Elvish, Shell::Fish, Shell::Zsh] {
-        generate_to(shell, &mut cmd, name, &outdir_string)?;
+        generate_to(shell, &mut cmd, name, &completions_dir)?;
     }
+
+    // Create directory for man pages
+    let man_dir = outdir.join("man_pages");
+    match fs::create_dir_all(&man_dir) {
+        Ok(_) => {}
+        Err(error) => match error.kind() {
+            ErrorKind::AlreadyExists => {}
+            other_error => {
+                panic!("Can't create the directory, {:?}", other_error)
+            }
+        },
+    };
 
     // Generate main man page
     let man = Man::new(cmd.clone());
     let mut buffer = Vec::new();
     man.render(&mut buffer)?;
-    fs::write(outdir.join(format!("{}.1", name)), buffer)?;
+    fs::write(man_dir.join(format!("{}.1", name)), buffer)?;
 
     // Generate sub man pages
     for subcommand in cmd.get_subcommands() {
@@ -45,7 +69,7 @@ fn main() -> Result<(), Error> {
         let mut buffer = Vec::new();
         man.title(display_name).render(&mut buffer)?;
 
-        fs::write(outdir.join(format!("{}.1", display_name)), buffer)?;
+        fs::write(man_dir.join(format!("{}.1", display_name)), buffer)?;
     }
 
     println!(

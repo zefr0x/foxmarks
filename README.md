@@ -23,6 +23,9 @@ For every new release a Github workflow will build a binary in Github servers an
 You can find the latest Github release [here](https://github.com/zer0-x/foxmarks/releases/latest) or the releases page [here](https://github.com/zer0-x/foxmarks/releases).
 
 ### [AUR](https://aur.archlinux.org/packages/foxmarks)
+
+[![AUR last modified](https://img.shields.io/aur/last-modified/foxmarks)](https://aur.archlinux.org/cgit/aur.git/log/?h=foxmarks)
+
 #### Using yay
 ```shell
 yay -Sa foxmarks

@@ -1,3 +1,0 @@
-[submodule "packaging/aur"]
-	path = packaging/aur
-	url = ssh://aur@aur.archlinux.org/foxmarks.git

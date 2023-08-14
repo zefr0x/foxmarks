@@ -1,6 +1,6 @@
 # foxmarks
 
-[![release](https://github.com/zer0-x/foxmarks/actions/workflows/release.yml/badge.svg)](https://github.com/zer0-x/foxmarks/actions/workflows/release.yml)
+[![release](https://github.com/zefr0x/foxmarks/actions/workflows/release.yml/badge.svg)](https://github.com/zefr0x/foxmarks/actions/workflows/release.yml)
 
 <br>
 
@@ -20,7 +20,7 @@ A blazingly fast, highly extendable and easily integrated command line **read-on
 ### Download Binary From Github
 For every new release a Github workflow will build a binary in Github servers and will upload it as a release asset in Github releases.
 
-You can find the latest Github release [here](https://github.com/zer0-x/foxmarks/releases/latest) or the releases page [here](https://github.com/zer0-x/foxmarks/releases).
+You can find the latest Github release [here](https://github.com/zefr0x/foxmarks/releases/latest) or the releases page [here](https://github.com/zefr0x/foxmarks/releases).
 
 ### [AUR](https://aur.archlinux.org/packages/foxmarks)
 
@@ -41,7 +41,7 @@ paru -Sa foxmarks
 > You need to have [`cargo`](https://doc.rust-lang.org/cargo/) installed in you system.
 
 ```shell
-git clone https://github.com/zer0-x/foxmarks.git
+git clone https://github.com/zefr0x/foxmarks.git
 
 cd foxmarks
 

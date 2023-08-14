@@ -1,12 +1,12 @@
 [package]
 name = "foxmarks"
 version = "1.0.2"
-authors = ["zer0-x"]
+authors = ["zefr0x"]
 edition = "2021"
 description = "A CLI read-only interface for firefox's bookmarks and history."
 readme = "README.md"
-homepage = "https://github.com/zer0-x/foxmarks"
-repository = "https://github.com/zer0-x/foxmarks.git"
+homepage = "https://github.com/zefr0x/foxmarks"
+repository = "https://github.com/zefr0x/foxmarks.git"
 license = "GPL-3.0"
 keywords = ["firefox", "bookmarks", "history", "cli"]
 categories = ["command-line-utilities", "database-implementations"]

@@ -17,13 +17,13 @@ build = "build.rs"
 strip = true
 
 [dependencies]
-clap = { version = "4.3.11", features = ["string"]}
+clap = { version = "4.3.22", features = ["string"]}
 configparser = "3.0.2"
 dirs = "5.0.1"
 rusqlite = "0.29.0"
-tempfile = "3.6.0"
+tempfile = "3.7.1"
 
 [build-dependencies]
-clap = { version = "4.3.11", features = ["string"]}
+clap = { version = "4.3.22", features = ["string"]}
 clap_complete = "4.3.2"
 clap_mangen = "0.2.12"

@@ -1,7 +1,8 @@
 use std::path::PathBuf;
-use std::string::String;
 
 use tempfile::NamedTempFile;
+
+use crate::cli::FirefoxType;
 
 struct Row {
     title: String,
@@ -19,7 +20,7 @@ struct Row {
 /// * `custom_profile_id` - Optional to use by passing a String with a profile is.
 ///  like: `xxxxxxxx.banking-profile`
 ///  A list could be found in `~/.mozilla/firefox/profiles.ini`
-fn get_database_location(firefox_type: u8, custom_profile_id: Option<String>) -> PathBuf {
+fn get_database_location(firefox_type: FirefoxType, custom_profile_id: Option<String>) -> PathBuf {
     let firefox_home_dir: PathBuf = match dirs::home_dir() {
         Some(path) => path,
         None => panic!("Can't find home directory."),
@@ -39,9 +40,11 @@ fn get_database_location(firefox_type: u8, custom_profile_id: Option<String>) ->
             for section in profiles.sections() {
                 match profiles.get(&section, "Default") {
                     Some(id) => {
-                        if (id.ends_with("default-release") && firefox_type == 0)
-                            || (id.ends_with("default-esr") && firefox_type == 1)
-                            || (id.ends_with("dev-edition-default") && firefox_type == 2)
+                        if (id.ends_with("default-release") && firefox_type == FirefoxType::Release)
+                            || (id.ends_with("default-esr") && firefox_type == FirefoxType::Esr)
+                            || ((id.ends_with("dev-edition-default")
+                                || id.ends_with("Default_Dev"))
+                                && firefox_type == FirefoxType::Dev)
                         {
                             profile_id = Some(id);
                         }
@@ -54,7 +57,12 @@ fn get_database_location(firefox_type: u8, custom_profile_id: Option<String>) ->
 
     match profile_id {
         Some(profile_id) => firefox_home_dir.join(profile_id).join("places.sqlite"),
-        None => panic!("Can not find any suitable profile id for firefox type {firefox_type}"),
+        None => {
+            panic!(
+                "Can not find any suitable default profile id for firefox type {}",
+                firefox_type.to_string()
+            )
+        }
     }
 }
 
@@ -74,7 +82,7 @@ fn get_temp_database(database_location: PathBuf) -> NamedTempFile {
 
 /// Returns sqlite connection and the temp_database.
 fn get_database_connection(
-    firefox_type: u8,
+    firefox_type: FirefoxType,
     custom_profile_id: Option<String>,
 ) -> (rusqlite::Connection, NamedTempFile) {
     let database_location = get_database_location(firefox_type, custom_profile_id);
@@ -89,8 +97,9 @@ fn get_database_connection(
     );
 }
 
+// TODO: Make it a generator function
 pub fn fetch_bookmarks(
-    firefox_type: u8,
+    firefox_type: FirefoxType,
     custom_profile_id: Option<String>,
     column_delimiter: String,
     row_delimiter: String,
@@ -122,8 +131,9 @@ pub fn fetch_bookmarks(
     temp_database.close().unwrap();
 }
 
+// TODO: Make it a generator function
 pub fn fetch_history(
-    firefox_type: u8,
+    firefox_type: FirefoxType,
     custom_profile_id: Option<String>,
     column_delimiter: String,
     row_delimiter: String,
@@ -139,17 +149,15 @@ pub fn fetch_history(
         )
         .unwrap();
 
-    let row_iter = statement
-        .query_map([], |row| {
-            Ok(Row {
-                // Return the value if exists, if not, a default String (empty string).
-                title: row.get(0).unwrap_or_default(),
-                url: row.get(1).unwrap_or_default(),
-            })
+    let row_iter = statement.query_map([], |row| {
+        Ok(Row {
+            // Return the value if exists, if not, a default String (empty string).
+            title: row.get(0).unwrap_or_default(),
+            url: row.get(1).unwrap_or_default(),
         })
-        .unwrap();
+    });
 
-    for row in row_iter {
+    for row in row_iter.unwrap() {
         let row = row.unwrap();
         print!("{}{column_delimiter}{}{row_delimiter}", row.title, row.url)
     }

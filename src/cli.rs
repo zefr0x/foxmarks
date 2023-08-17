@@ -1,7 +1,48 @@
 use std::path::PathBuf;
+use std::str::FromStr;
 
 use clap::builder::NonEmptyStringValueParser;
-use clap::{Arg, ArgAction, Command};
+use clap::{Arg, ArgAction, Command, ValueEnum};
+
+#[derive(PartialEq, Clone)]
+pub enum FirefoxType {
+    Release,
+    Esr,
+    Dev,
+}
+
+impl FromStr for FirefoxType {
+    type Err = String;
+
+    fn from_str(source: &str) -> Result<FirefoxType, String> {
+        match source {
+            "Release" => Ok(Self::Release),
+            "Esr" => Ok(Self::Esr),
+            "Dev" => Ok(Self::Dev),
+            _ => Err(source.to_owned()),
+        }
+    }
+}
+
+impl ToString for FirefoxType {
+    fn to_string(&self) -> String {
+        match self {
+            FirefoxType::Release => "Release".to_owned(),
+            FirefoxType::Esr => "Esr".to_owned(),
+            FirefoxType::Dev => "Dev".to_owned(),
+        }
+    }
+}
+
+impl ValueEnum for FirefoxType {
+    fn value_variants<'a>() -> &'a [Self] {
+        &[Self::Release, Self::Esr, Self::Dev]
+    }
+
+    fn to_possible_value(&self) -> Option<clap::builder::PossibleValue> {
+        Some(clap::builder::PossibleValue::new(self.to_string()))
+    }
+}
 
 pub fn build_cli() -> Command {
     Command::new(env!("CARGO_PKG_NAME"))
@@ -24,8 +65,8 @@ pub fn build_cli() -> Command {
                 .long("firefox-type")
                 .action(ArgAction::Set)
                 .value_name("type")
-                .value_parser(clap::value_parser!(u8).range(0..3))
-                .help("0 for firefox-release, 1 for firefox-esr, 2 for firefox-dev")
+                .value_parser(clap::builder::EnumValueParser::<FirefoxType>::new())
+                .help("To find default created profile for a specific firefox version")
                 .display_order(0),
         )
         .arg(
@@ -36,7 +77,7 @@ pub fn build_cli() -> Command {
                 .value_name("id")
                 .value_parser(NonEmptyStringValueParser::new())
                 .help("A custom profile id to be used rather then the defualt ones")
-                .long_help("A custom profile id to be used rather then the defualt ones.\nYou can find a list of the profiles in `~/.mozilla/firefox/profiles.ini` file, or just list the directories in `~/.mozilla/firefox` and there names are the profiles IDs.\nBy default it will detect the default profile for every firefox-type.")
+                .long_help("A custom profile id to be used rather then the defualt ones.\nYou can find a list of the profiles in `~/.mozilla/firefox/profiles.ini` file, or just list the directories in `~/.mozilla/firefox` and there names are the profiles IDs.\nBy default it will detect the default profile for every firefox-type, except if you are using a custom profile as your default one.")
                 .conflicts_with("firefox-type")
                 .display_order(1),
         )

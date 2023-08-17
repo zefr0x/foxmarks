@@ -1,9 +1,9 @@
 use std::path::PathBuf;
-use std::string::String;
+use std::str::FromStr;
 
-mod cli;
-mod config;
-mod database;
+use foxmarks::cli;
+use foxmarks::config;
+use foxmarks::database;
 
 fn main() {
     let matches = cli::build_cli().get_matches();
@@ -12,12 +12,14 @@ fn main() {
     let config_object = config::load(matches.get_one::<PathBuf>("config-path"));
 
     // Set some general options.
-    let firefox_type = match matches.get_one::<u8>("firefox-type") {
-        Some(type_num) => type_num.to_owned(),
-        None => config_object
-            .getint("database", "firefox_type")
-            .unwrap()
-            .unwrap_or(0) as u8,
+    let firefox_type = match matches.get_one::<cli::FirefoxType>("firefox-type") {
+        Some(firefox_type) => firefox_type.to_owned(),
+        None => cli::FirefoxType::from_str(
+            &config_object
+                .get("database", "firefox_type")
+                .unwrap_or("Release".to_owned()),
+        )
+        .expect("Non-valid firefox type specified"),
     };
 
     let profile_id = match matches.get_one::<String>("profile-id") {

@@ -17,10 +17,10 @@ struct Row {
 ///  `firefox`: 0
 ///  `firefox-esr`: 1
 ///  `firefox-dev`: 2
-/// * `custom_profile_id` - Optional to use by passing a String with a profile is.
+/// * `custom_profile_path` - Optional to use by passing a String with a profile is.
 ///  like: `xxxxxxxx.banking-profile`
 ///  A list could be found in `~/.mozilla/firefox/profiles.ini`
-fn get_database_location(firefox_type: FirefoxType, custom_profile_id: Option<String>) -> PathBuf {
+fn get_database_location(firefox_type: FirefoxType, custom_profile_path: Option<String>) -> PathBuf {
     let firefox_home_dir: PathBuf = match dirs::home_dir() {
         Some(path) => path,
         None => panic!("Can't find home directory."),
@@ -32,10 +32,10 @@ fn get_database_location(firefox_type: FirefoxType, custom_profile_id: Option<St
         .load(firefox_home_dir.join("profiles.ini"))
         .unwrap();
 
-    let mut profile_id: Option<String> = None;
+    let mut profile_path: Option<String> = None;
 
-    match custom_profile_id {
-        Some(custom_profile_id) => profile_id = Some(custom_profile_id),
+    match custom_profile_path {
+        Some(custom_profile_path) => profile_path = Some(custom_profile_path),
         None => {
             for section in profiles.sections() {
                 match profiles.get(&section, "Default") {
@@ -46,7 +46,7 @@ fn get_database_location(firefox_type: FirefoxType, custom_profile_id: Option<St
                                 || id.ends_with("Default_Dev"))
                                 && firefox_type == FirefoxType::Dev)
                         {
-                            profile_id = Some(id);
+                            profile_path = Some(id);
                         }
                     }
                     None => continue,
@@ -55,8 +55,8 @@ fn get_database_location(firefox_type: FirefoxType, custom_profile_id: Option<St
         }
     }
 
-    match profile_id {
-        Some(profile_id) => firefox_home_dir.join(profile_id).join("places.sqlite"),
+    match profile_path {
+        Some(profile_path) => firefox_home_dir.join(profile_path).join("places.sqlite"),
         None => {
             panic!(
                 "Can not find any suitable default profile id for firefox type {}",
@@ -83,9 +83,9 @@ fn get_temp_database(database_location: PathBuf) -> NamedTempFile {
 /// Returns sqlite connection and the temp_database.
 fn get_database_connection(
     firefox_type: FirefoxType,
-    custom_profile_id: Option<String>,
+    custom_profile_path: Option<String>,
 ) -> (rusqlite::Connection, NamedTempFile) {
-    let database_location = get_database_location(firefox_type, custom_profile_id);
+    let database_location = get_database_location(firefox_type, custom_profile_path);
 
     let temp_database = get_temp_database(database_location);
 
@@ -100,12 +100,12 @@ fn get_database_connection(
 // TODO: Make it a generator function
 pub fn fetch_bookmarks(
     firefox_type: FirefoxType,
-    custom_profile_id: Option<String>,
+    custom_profile_path: Option<String>,
     column_delimiter: String,
     row_delimiter: String,
 ) {
     let (database_connection, temp_database) =
-        get_database_connection(firefox_type, custom_profile_id);
+        get_database_connection(firefox_type, custom_profile_path);
 
     let mut statement = database_connection
         .prepare(
@@ -134,12 +134,12 @@ pub fn fetch_bookmarks(
 // TODO: Make it a generator function
 pub fn fetch_history(
     firefox_type: FirefoxType,
-    custom_profile_id: Option<String>,
+    custom_profile_path: Option<String>,
     column_delimiter: String,
     row_delimiter: String,
 ) {
     let (database_connection, temp_database) =
-        get_database_connection(firefox_type, custom_profile_id);
+        get_database_connection(firefox_type, custom_profile_path);
 
     let mut statement = database_connection
         .prepare(

@@ -119,7 +119,7 @@ Just create it and specify the options you need with the ini format:
 ```ini
 [database]
 firefox_type = 0
-profile_id = xxxxxxxx.default-release
+profile_path = xxxxxxxx.default-release
 
 [output]
 column_delimiter = |

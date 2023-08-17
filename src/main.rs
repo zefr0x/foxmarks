@@ -22,9 +22,9 @@ fn main() {
         .expect("Non-valid firefox type specified"),
     };
 
-    let profile_id = match matches.get_one::<String>("profile-id") {
+    let profile_path = match matches.get_one::<String>("profile-path") {
         Some(id) => Some(id.to_owned()),
-        None => config_object.get("database", "profile_id"),
+        None => config_object.get("database", "profile_path"),
     };
 
     let column_delimiter = match matches.get_one::<String>("column-delimiter") {
@@ -54,10 +54,10 @@ fn main() {
     // Match subcommad, and set sub option if available.
     match matches.subcommand() {
         Some(("bookmarks", _sub_matches)) => {
-            database::fetch_bookmarks(firefox_type, profile_id, column_delimiter, row_delimiter);
+            database::fetch_bookmarks(firefox_type, profile_path, column_delimiter, row_delimiter);
         }
         Some(("history", _sub_matches)) => {
-            database::fetch_history(firefox_type, profile_id, column_delimiter, row_delimiter);
+            database::fetch_history(firefox_type, profile_path, column_delimiter, row_delimiter);
         }
         _ => unreachable!(),
     }

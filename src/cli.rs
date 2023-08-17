@@ -70,14 +70,14 @@ pub fn build_cli() -> Command {
                 .display_order(0),
         )
         .arg(
-            Arg::new("profile-id")
+            Arg::new("profile-path")
                 .short('p')
-                .long("profile-id")
+                .long("profile-path")
                 .action(ArgAction::Set)
                 .value_name("id")
                 .value_parser(NonEmptyStringValueParser::new())
-                .help("A custom profile id to be used rather then the defualt ones")
-                .long_help("A custom profile id to be used rather then the defualt ones.\nYou can find a list of the profiles in `~/.mozilla/firefox/profiles.ini` file, or just list the directories in `~/.mozilla/firefox` and there names are the profiles IDs.\nBy default it will detect the default profile for every firefox-type, except if you are using a custom profile as your default one.")
+                .help("A custom profile path to be used rather then the defualt ones")
+                .long_help("A custom profile path to be used rather then the defualt ones.\nYou can find a list of the profiles by looking in ProfileX entries in `~/.mozilla/firefox/profiles.ini` file.\nBy default it will detect the default profile for every firefox-type, except if you are using a custom profile as your default one.")
                 .conflicts_with("firefox-type")
                 .display_order(1),
         )

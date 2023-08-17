@@ -64,12 +64,16 @@ foxmarks history
 ```
 By default it will try to fetch the data from the default profile of `firefox-release`, but if you have `firefox-esr` or `firefox-dev` installed, you can specify a type:
 ```shell
-foxmarks -t 1 bookmarks
+foxmarks -t Esr bookmarks
 ```
 
-> 0: firefox-release
-> 1: firefox-esr
-> 2: firefox-dev
+> Release: firefox-release
+>
+> Esr: firefox-esr
+>
+> Dev: firefox-dev
+
+> If you are using a custom profile as your default one you need to use `profile-path` option to specify the profile you want to read from.
 
 For more options and details read the long help:
 ```shell

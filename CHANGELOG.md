@@ -1,5 +1,19 @@
 # Unreleased
 
+# 2.0.0beta.0
+
+## Changed
+
+- Rename `profile-id` option as `profile-path`. <sup>`Breaking Change`</sup>
+
+## Improved
+
+- How firefox-type is handled internaly and externaly (CLI interface). <sup>`Breaking Change`</sup>
+
+## Dependencies
+
+- All dependencies are up to date.
+
 # 1.0.2
 
 ## Added

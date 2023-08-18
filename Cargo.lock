@@ -215,7 +215,7 @@ checksum = "6999dc1837253364c2ebb0704ba97994bd874e8f195d665c50b7548f6ea92764"
 
 [[package]]
 name = "foxmarks"
-version = "1.0.2"
+version = "2.0.0-beta.0"
 dependencies = [
  "clap",
  "clap_complete",

@@ -3,7 +3,7 @@ use std::str::FromStr;
 
 use foxmarks::cli;
 use foxmarks::config;
-use foxmarks::database;
+use foxmarks::database::DataBase;
 
 fn main() {
     let matches = cli::build_cli().get_matches();
@@ -51,14 +51,18 @@ fn main() {
         .replace("\\n", "\n")
         .replace("\\r", "\r");
 
+    let db = DataBase::new(firefox_type, profile_path).connect();
+
     // Match subcommad, and set sub option if available.
     match matches.subcommand() {
-        Some(("bookmarks", _sub_matches)) => {
-            database::fetch_bookmarks(firefox_type, profile_path, column_delimiter, row_delimiter);
+        Some(("bookmarks", _)) => {
+            db.fetch_bookmarks(column_delimiter, row_delimiter);
         }
-        Some(("history", _sub_matches)) => {
-            database::fetch_history(firefox_type, profile_path, column_delimiter, row_delimiter);
+        Some(("history", _)) => {
+            db.fetch_history(column_delimiter, row_delimiter);
         }
         _ => unreachable!(),
     }
+
+    db.close();
 }

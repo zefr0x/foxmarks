@@ -73,7 +73,7 @@ foxmarks -t Esr bookmarks
 >
 > Dev: firefox-dev
 
-> If you are using a custom profile as your default one you need to use `profile-path` option to specify the profile you want to read from.
+> If you are using a custom profile as your default one or you are using the flatpak version of firefox, then you need to use `profile-path` option to specify the profile you want to read from.
 
 For more options and details read the long help:
 ```shell

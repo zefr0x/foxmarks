@@ -52,6 +52,7 @@ impl DataBase {
             Some(path) => path,
             None => panic!("Can't find home directory."),
         }
+        // TODO: Make this configurable.
         .join(".mozilla/firefox");
 
         let mut profiles = configparser::ini::Ini::new();

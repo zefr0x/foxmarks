@@ -1,5 +1,11 @@
 # Unreleased
 
+# 2.0.0
+
+## Improved
+
+- Config rust for better release binary size optimizations.
+
 # 2.0.0beta.0
 
 ## Changed

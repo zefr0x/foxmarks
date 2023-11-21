@@ -1,5 +1,11 @@
 # Unreleased
 
+# 2.0.1
+
+## Fixed
+
+- Wrong path in github workflow builds.
+
 # 2.0.0
 
 ## Improved

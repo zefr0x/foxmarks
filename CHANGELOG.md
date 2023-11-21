@@ -1,5 +1,11 @@
 # Unreleased
 
+# 2.0.2
+
+## Changed
+
+- Now libsqlite is shiped bundled with rusqlite, to link against the system's libsqlite you can use: `--no-default-features`.
+
 # 2.0.1
 
 ## Fixed

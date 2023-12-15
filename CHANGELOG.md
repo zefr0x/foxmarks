@@ -1,5 +1,11 @@
 # Unreleased
 
+# 2.0.3
+
+## Dependencies
+
+- All dependencies are up to date.
+
 # 2.0.2
 
 ## Changed

@@ -37,7 +37,7 @@ paru -Sa foxmarks
 ```
 
 ## Build
-> **Note**
+> [!Note]
 > You need to have [`cargo`](https://doc.rust-lang.org/cargo/) installed in you system.
 
 ```shell
@@ -113,7 +113,8 @@ then
 fi
 ```
 
-> **Warning** You might use another language like Python for better and faster implementaion.
+> [!Warning]
+> You might use another language like Python for better and faster implementaion.
 
 ## Config
 The default options might not fit your needs, so you can change them via a config file.

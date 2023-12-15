@@ -20,14 +20,14 @@ panic = "abort"
 strip = true
 
 [dependencies]
-clap = { version = "4.4.8", features = ["string"]}
+clap = { version = "4.4.11", features = ["string"]}
 configparser = "3.0.3"
 dirs = "5.0.1"
 rusqlite = "0.30.0"
 tempfile = "3.8.1"
 
 [build-dependencies]
-clap = { version = "4.4.8", features = ["string"]}
+clap = { version = "4.4.11", features = ["string"]}
 clap_complete = "4.4.4"
 clap_mangen = "0.2.15"
 

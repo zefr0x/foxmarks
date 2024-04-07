@@ -26,6 +26,10 @@ fn main() {
             std::borrow::ToOwned::to_owned,
         );
 
+    let firefox_home_path = matches.get_one::<String>("firefox-home-path").map_or_else(
+        || config_object.get("database", "firefox_home_path"),
+        |id| Some(id.to_owned()),
+    );
 
     let profile_path = matches.get_one::<String>("profile-path").map_or_else(
         || config_object.get("database", "profile_path"),
@@ -60,7 +64,7 @@ fn main() {
         .replace("\\n", "\n")
         .replace("\\r", "\r");
 
-    let db = DataBase::new(&firefox_type, profile_path).connect();
+    let db = DataBase::new(&firefox_type, firefox_home_path, profile_path).connect();
 
     // Match subcommad, and set sub option if available.
     match matches.subcommand() {

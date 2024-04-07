@@ -124,6 +124,7 @@ Just create it and specify the options you need with the ini format:
 ```ini
 [database]
 firefox_type = Release
+firefox_home_path = ~/.mozilla/firefox/
 profile_path = xxxxxxxx.default-release
 
 [output]

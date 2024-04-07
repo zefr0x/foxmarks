@@ -71,6 +71,17 @@ pub fn build() -> Command {
                 .display_order(0),
         )
         .arg(
+            Arg::new("firefox-home-path")
+                .short('f')
+                .long("firefox-home-path")
+                .action(ArgAction::Set)
+                .value_name("path")
+                .value_parser(NonEmptyStringValueParser::new())
+                .help("A custom firefox home path to be used rather than `~/.mozilla/firefox`")
+                .long_help("A custom firefox home path to be used rather than `~/.mozilla/firefox`.\nThis is usefull for flatpak users.")
+                .display_order(1),
+        )
+        .arg(
             Arg::new("profile-path")
                 .short('p')
                 .long("profile-path")
@@ -80,7 +91,7 @@ pub fn build() -> Command {
                 .help("A custom profile path to be used rather then the defualt ones")
                 .long_help("A custom profile path to be used rather then the defualt ones.\nYou can find a list of the profiles by looking in ProfileX entries in `~/.mozilla/firefox/profiles.ini` file.\nBy default it will detect the default profile for every firefox-type, except if you are using a custom profile as your default one.")
                 .conflicts_with("firefox-type")
-                .display_order(1),
+                .display_order(2),
         )
         .arg(
             Arg::new("column-delimiter")
@@ -88,7 +99,7 @@ pub fn build() -> Command {
                 .action(ArgAction::Set)
                 .value_name("delimiter")
                 .help("A delimiter to seprate the columns of the output")
-                .display_order(2),
+                .display_order(3),
         )
         .arg(
             Arg::new("row-delimiter")
@@ -96,7 +107,7 @@ pub fn build() -> Command {
                 .action(ArgAction::Set)
                 .value_name("delimiter")
                 .help("A delimiter to seprate the rows of the output")
-                .display_order(3),
+                .display_order(4),
         )
         .arg(
             Arg::new("config-path")
@@ -105,7 +116,7 @@ pub fn build() -> Command {
                 .value_name("FILE")
                 .value_parser(clap::value_parser!(PathBuf))
                 .help("Path to a costum config file")
-                .display_order(4),
+                .display_order(5),
         )
         .subcommand(
             Command::new("bookmarks")

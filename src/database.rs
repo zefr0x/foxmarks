@@ -27,11 +27,13 @@ impl DataBase {
     #[allow(clippy::use_self)]
     pub fn new(
         firefox_type: &FirefoxType,
+        firefox_home_path: Option<String>,
         custom_profile_path: Option<String>,
     ) -> DataBase<NotConnected> {
         Self {
             database_location: Rc::new(Self::get_database_location(
                 firefox_type,
+                firefox_home_path,
                 custom_profile_path,
             )),
             temp_database: None,
@@ -49,11 +51,17 @@ impl DataBase {
     ///  A list could be found in `~/.mozilla/firefox/profiles.ini`
     fn get_database_location(
         firefox_type: &FirefoxType,
+        firefox_home_path: Option<String>,
         custom_profile_path: Option<String>,
     ) -> PathBuf {
-        let firefox_home_dir = dirs::home_dir()
-            .map_or_else(|| panic!("Can't find home directory."), |path| path)
-            .join(".mozilla/firefox");
+        let firefox_home_dir = firefox_home_path.map_or_else(
+            || {
+                dirs::home_dir()
+                    .map_or_else(|| panic!("Can't find home directory."), |path| path)
+                    .join(".mozilla/firefox")
+            },
+            PathBuf::from,
+        );
 
         let mut profiles = configparser::ini::Ini::new();
         #[allow(clippy::unwrap_used)]

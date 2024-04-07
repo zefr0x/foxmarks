@@ -1,4 +1,4 @@
-use std::marker::PhantomData;
+use core::marker::PhantomData;
 use std::path::PathBuf;
 use std::rc::Rc;
 
@@ -15,6 +15,7 @@ pub struct NotConnected;
 pub struct Connected;
 
 pub struct DataBase<State = NotConnected> {
+    #[allow(clippy::rc_buffer)]
     database_location: Rc<PathBuf>,
     temp_database: Option<NamedTempFile>,
     connection: Option<rusqlite::Connection>,
@@ -22,8 +23,10 @@ pub struct DataBase<State = NotConnected> {
 }
 
 impl DataBase {
+    #[must_use]
+    #[allow(clippy::use_self)]
     pub fn new(
-        firefox_type: FirefoxType,
+        firefox_type: &FirefoxType,
         custom_profile_path: Option<String>,
     ) -> DataBase<NotConnected> {
         Self {
@@ -37,7 +40,7 @@ impl DataBase {
         }
     }
 
-    /// Returns a PathBuf for the selected profile places database file.
+    /// Returns a [`PathBuf`] for the selected profile places database file.
     /// It will search for a default profile for the selected type or you can use a custom one.
     ///
     /// # Arguments
@@ -45,19 +48,18 @@ impl DataBase {
     ///  like: `xxxxxxxx.banking-profile`
     ///  A list could be found in `~/.mozilla/firefox/profiles.ini`
     fn get_database_location(
-        firefox_type: FirefoxType,
+        firefox_type: &FirefoxType,
         custom_profile_path: Option<String>,
     ) -> PathBuf {
-        let firefox_home_dir: PathBuf = match dirs::home_dir() {
-            Some(path) => path,
-            None => panic!("Can't find home directory."),
-        }
-        // TODO: Make this configurable.
-        .join(".mozilla/firefox");
+        let firefox_home_dir = dirs::home_dir()
+            .map_or_else(|| panic!("Can't find home directory."), |path| path)
+            .join(".mozilla/firefox");
 
         let mut profiles = configparser::ini::Ini::new();
+        #[allow(clippy::unwrap_used)]
         profiles
             .load(firefox_home_dir.join("profiles.ini"))
+            // The panic message provided is great
             .unwrap();
 
         let mut profile_path: Option<String> = None;
@@ -69,11 +71,12 @@ impl DataBase {
                     match profiles.get(&section, "Default") {
                         Some(id) => {
                             if (id.ends_with("default-release")
-                                && firefox_type == FirefoxType::Release)
-                                || (id.ends_with("default-esr") && firefox_type == FirefoxType::Esr)
+                                && firefox_type == &FirefoxType::Release)
+                                || (id.ends_with("default-esr")
+                                    && firefox_type == &FirefoxType::Esr)
                                 || ((id.ends_with("dev-edition-default")
                                     || id.ends_with("Default_Dev"))
-                                    && firefox_type == FirefoxType::Dev)
+                                    && firefox_type == &FirefoxType::Dev)
                             {
                                 profile_path = Some(id);
                             }
@@ -84,26 +87,30 @@ impl DataBase {
             }
         }
 
-        match profile_path {
-            Some(profile_path) => firefox_home_dir.join(profile_path).join("places.sqlite"),
-            None => {
+        profile_path.map_or_else(
+            || {
                 panic!(
                     "Can not find any suitable default profile id for firefox type {}",
                     firefox_type.to_string()
                 )
-            }
-        }
+            },
+            |profile_path| firefox_home_dir.join(profile_path).join("places.sqlite"),
+        )
     }
 }
 
+/// Create connection to the temp database.
 impl DataBase<NotConnected> {
-    /// Create connection to the temp database.
+    #[must_use]
     pub fn connect(&self) -> DataBase<Connected> {
+        //! # Panics
+        //! When can't connect to the database or cna't create temp file and copy the origin database.
         let temp_database = self.get_temp_database();
+        #[allow(clippy::unwrap_used)]
         let connection = rusqlite::Connection::open(temp_database.path()).unwrap();
 
         DataBase {
-            database_location: self.database_location.clone(),
+            database_location: Rc::clone(&self.database_location),
             temp_database: Some(temp_database),
             connection: Some(connection),
             state: PhantomData::<Connected>,
@@ -112,9 +119,11 @@ impl DataBase<NotConnected> {
 
     /// Since the database is locked when firefox is running, we need to copy it to a tmpfile to use it.
     fn get_temp_database(&self) -> NamedTempFile {
+        #[allow(clippy::unwrap_used)]
         let temp_database_file = NamedTempFile::new().unwrap();
 
         // Copy the whole database file to a temp file.
+        #[allow(clippy::unwrap_used)]
         std::fs::copy(self.database_location.as_path(), temp_database_file.path()).unwrap();
 
         temp_database_file
@@ -123,18 +132,25 @@ impl DataBase<NotConnected> {
 
 impl DataBase<Connected> {
     pub fn close(mut self) {
+        //! # Panics
+        //! When can't close the database connection or the temp file.
         if let Some(connection) = self.connection {
+            #[allow(clippy::unwrap_used)]
             connection.close().unwrap();
             self.connection = None;
         }
         if let Some(temp_database) = self.temp_database {
+            #[allow(clippy::unwrap_used)]
             temp_database.close().unwrap();
             self.connection = None;
         }
     }
 
     // TODO: Make it a generator function
-    pub fn fetch_bookmarks(&self, column_delimiter: String, row_delimiter: String) {
+    pub fn fetch_bookmarks(&self, column_delimiter: &str, row_delimiter: &str) {
+        //! # Panics
+        //! When don't get the expected results from the database query.
+        #[allow(clippy::unwrap_used)]
         let mut statement = self
             .connection
             .as_ref()
@@ -154,14 +170,18 @@ impl DataBase<Connected> {
             })
         });
 
+        #[allow(clippy::unwrap_used)]
         for row in row_iter.unwrap() {
             let row = row.unwrap();
-            print!("{}{column_delimiter}{}{row_delimiter}", row.title, row.url)
+            print!("{}{column_delimiter}{}{row_delimiter}", row.title, row.url);
         }
     }
 
     // TODO: Make it a generator function
-    pub fn fetch_history(&self, column_delimiter: String, row_delimiter: String) {
+    pub fn fetch_history(&self, column_delimiter: &str, row_delimiter: &str) {
+        //! # Panics
+        //! When don't get the expected results from the database query.
+        #[allow(clippy::unwrap_used)]
         let mut statement = self
             .connection
             .as_ref()
@@ -181,9 +201,10 @@ impl DataBase<Connected> {
             })
         });
 
+        #[allow(clippy::unwrap_used)]
         for row in row_iter.unwrap() {
             let row = row.unwrap();
-            print!("{}{column_delimiter}{}{row_delimiter}", row.title, row.url)
+            print!("{}{column_delimiter}{}{row_delimiter}", row.title, row.url);
         }
     }
 }

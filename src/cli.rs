@@ -1,10 +1,10 @@
+use core::str::FromStr;
 use std::path::PathBuf;
-use std::str::FromStr;
 
 use clap::builder::NonEmptyStringValueParser;
 use clap::{Arg, ArgAction, Command, ValueEnum};
 
-#[derive(PartialEq, Clone)]
+#[derive(PartialEq, Eq, Clone)]
 pub enum FirefoxType {
     Release,
     Esr,
@@ -14,7 +14,7 @@ pub enum FirefoxType {
 impl FromStr for FirefoxType {
     type Err = String;
 
-    fn from_str(source: &str) -> Result<FirefoxType, String> {
+    fn from_str(source: &str) -> Result<Self, String> {
         match source {
             "Release" => Ok(Self::Release),
             "Esr" => Ok(Self::Esr),
@@ -26,16 +26,16 @@ impl FromStr for FirefoxType {
 
 impl ToString for FirefoxType {
     fn to_string(&self) -> String {
-        match self {
-            FirefoxType::Release => "Release".to_owned(),
-            FirefoxType::Esr => "Esr".to_owned(),
-            FirefoxType::Dev => "Dev".to_owned(),
+        match *self {
+            Self::Release => "Release".to_owned(),
+            Self::Esr => "Esr".to_owned(),
+            Self::Dev => "Dev".to_owned(),
         }
     }
 }
 
 impl ValueEnum for FirefoxType {
-    fn value_variants<'a>() -> &'a [Self] {
+    fn value_variants<'src>() -> &'src [Self] {
         &[Self::Release, Self::Esr, Self::Dev]
     }
 
@@ -44,7 +44,8 @@ impl ValueEnum for FirefoxType {
     }
 }
 
-pub fn build_cli() -> Command {
+#[must_use]
+pub fn build() -> Command {
     Command::new(env!("CARGO_PKG_NAME"))
         .about(env!("CARGO_PKG_DESCRIPTION"))
         // FIXME:

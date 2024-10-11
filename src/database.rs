@@ -1,6 +1,5 @@
-use core::marker::PhantomData;
+use core::{marker::PhantomData, mem};
 use std::path::PathBuf;
-use std::rc::Rc;
 
 use tempfile::NamedTempFile;
 
@@ -15,7 +14,7 @@ pub struct NotConnected;
 pub struct Connected;
 
 pub struct DataBase<State = NotConnected> {
-    database_location: Rc<PathBuf>,
+    database_location: PathBuf,
     temp_database: Option<NamedTempFile>,
     connection: Option<rusqlite::Connection>,
     state: PhantomData<State>,
@@ -30,11 +29,11 @@ impl DataBase {
         custom_profile_path: Option<String>,
     ) -> DataBase<NotConnected> {
         Self {
-            database_location: Rc::new(Self::get_database_location(
+            database_location: Self::get_database_location(
                 firefox_type,
                 firefox_home_path,
                 custom_profile_path,
-            )),
+            ),
             temp_database: None,
             connection: None,
             state: PhantomData::<NotConnected>,
@@ -108,7 +107,7 @@ impl DataBase {
 /// Create connection to the temp database.
 impl DataBase<NotConnected> {
     #[must_use]
-    pub fn connect(&self) -> DataBase<Connected> {
+    pub fn connect(&mut self) -> DataBase<Connected> {
         //! # Panics
         //! When can't connect to the database or cna't create temp file and copy the origin database.
         let temp_database = self.get_temp_database();
@@ -116,7 +115,7 @@ impl DataBase<NotConnected> {
         let connection = rusqlite::Connection::open(temp_database.path()).unwrap();
 
         DataBase {
-            database_location: Rc::clone(&self.database_location),
+            database_location: mem::take(&mut self.database_location),
             temp_database: Some(temp_database),
             connection: Some(connection),
             state: PhantomData::<Connected>,

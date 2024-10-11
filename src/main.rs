@@ -23,7 +23,7 @@ fn main() {
                 )
                 .expect("Non-valid firefox type specified")
             },
-            std::borrow::ToOwned::to_owned,
+            ToOwned::to_owned,
         );
 
     let firefox_home_path = matches.get_one::<String>("firefox-home-path").map_or_else(
@@ -42,7 +42,7 @@ fn main() {
                 .get("output", "column_delimiter")
                 .unwrap_or_else(|| String::from(";"))
         },
-        std::borrow::ToOwned::to_owned,
+        ToOwned::to_owned,
     );
 
     let row_delimiter = matches.get_one::<String>("row-delimiter").map_or_else(
@@ -51,7 +51,7 @@ fn main() {
                 .get("output", "row_delimiter")
                 .unwrap_or_else(|| String::from("\n"))
         },
-        std::borrow::ToOwned::to_owned,
+        ToOwned::to_owned,
     );
 
     // TODO: Find better and more general way to do that.

@@ -15,7 +15,6 @@ pub struct NotConnected;
 pub struct Connected;
 
 pub struct DataBase<State = NotConnected> {
-    #[allow(clippy::rc_buffer)]
     database_location: Rc<PathBuf>,
     temp_database: Option<NamedTempFile>,
     connection: Option<rusqlite::Connection>,
@@ -24,7 +23,7 @@ pub struct DataBase<State = NotConnected> {
 
 impl DataBase {
     #[must_use]
-    #[allow(clippy::use_self)]
+    #[expect(clippy::use_self, reason = "`Self` doesn't accept type parameters")]
     pub fn new(
         firefox_type: &FirefoxType,
         firefox_home_path: Option<String>,
@@ -47,8 +46,8 @@ impl DataBase {
     ///
     /// # Arguments
     /// * `custom_profile_path` - Optional to be used by passing a String with a profile path.
-    ///  like: `xxxxxxxx.banking-profile`
-    ///  A list could be found in `~/.mozilla/firefox/profiles.ini`
+    ///   like: `xxxxxxxx.banking-profile`
+    ///   A list could be found in `~/.mozilla/firefox/profiles.ini`
     fn get_database_location(
         firefox_type: &FirefoxType,
         firefox_home_path: Option<String>,
@@ -64,7 +63,7 @@ impl DataBase {
         );
 
         let mut profiles = configparser::ini::Ini::new();
-        #[allow(clippy::unwrap_used)]
+        #[expect(clippy::unwrap_used, reason = "Default panic message is perfect")]
         profiles
             .load(firefox_home_dir.join("profiles.ini"))
             // The panic message provided is great
@@ -98,8 +97,7 @@ impl DataBase {
         profile_path.map_or_else(
             || {
                 panic!(
-                    "Can not find any suitable default profile id for firefox type {}",
-                    firefox_type.to_string()
+                    "Can not find any suitable default profile id for firefox type {firefox_type}"
                 )
             },
             |profile_path| firefox_home_dir.join(profile_path).join("places.sqlite"),
@@ -114,7 +112,7 @@ impl DataBase<NotConnected> {
         //! # Panics
         //! When can't connect to the database or cna't create temp file and copy the origin database.
         let temp_database = self.get_temp_database();
-        #[allow(clippy::unwrap_used)]
+        #[expect(clippy::unwrap_used, reason = "Should panic if failed")]
         let connection = rusqlite::Connection::open(temp_database.path()).unwrap();
 
         DataBase {
@@ -127,11 +125,11 @@ impl DataBase<NotConnected> {
 
     /// Since the database is locked when firefox is running, we need to copy it to a tmpfile to use it.
     fn get_temp_database(&self) -> NamedTempFile {
-        #[allow(clippy::unwrap_used)]
+        #[expect(clippy::unwrap_used, reason = "Should panic if failed")]
         let temp_database_file = NamedTempFile::new().unwrap();
 
         // Copy the whole database file to a temp file.
-        #[allow(clippy::unwrap_used)]
+        #[expect(clippy::unwrap_used, reason = "Should panic if failed")]
         std::fs::copy(self.database_location.as_path(), temp_database_file.path()).unwrap();
 
         temp_database_file
@@ -143,12 +141,12 @@ impl DataBase<Connected> {
         //! # Panics
         //! When can't close the database connection or the temp file.
         if let Some(connection) = self.connection {
-            #[allow(clippy::unwrap_used)]
+            #[expect(clippy::unwrap_used, reason = "Should panic if failed")]
             connection.close().unwrap();
             self.connection = None;
         }
         if let Some(temp_database) = self.temp_database {
-            #[allow(clippy::unwrap_used)]
+            #[expect(clippy::unwrap_used, reason = "Should panic if failed")]
             temp_database.close().unwrap();
             self.connection = None;
         }
@@ -158,7 +156,7 @@ impl DataBase<Connected> {
     pub fn fetch_bookmarks(&self, column_delimiter: &str, row_delimiter: &str) {
         //! # Panics
         //! When don't get the expected results from the database query.
-        #[allow(clippy::unwrap_used)]
+        #[expect(clippy::unwrap_used, reason = "This call is correct")]
         let mut statement = self
             .connection
             .as_ref()
@@ -178,7 +176,7 @@ impl DataBase<Connected> {
             })
         });
 
-        #[allow(clippy::unwrap_used)]
+        #[expect(clippy::unwrap_used, reason = "Should panic if failed")]
         for row in row_iter.unwrap() {
             let row = row.unwrap();
             print!("{}{column_delimiter}{}{row_delimiter}", row.title, row.url);
@@ -189,7 +187,7 @@ impl DataBase<Connected> {
     pub fn fetch_history(&self, column_delimiter: &str, row_delimiter: &str) {
         //! # Panics
         //! When don't get the expected results from the database query.
-        #[allow(clippy::unwrap_used)]
+        #[expect(clippy::unwrap_used, reason = "This call is correct")]
         let mut statement = self
             .connection
             .as_ref()
@@ -209,7 +207,7 @@ impl DataBase<Connected> {
             })
         });
 
-        #[allow(clippy::unwrap_used)]
+        #[expect(clippy::unwrap_used, reason = "Should panic if failed")]
         for row in row_iter.unwrap() {
             let row = row.unwrap();
             print!("{}{column_delimiter}{}{row_delimiter}", row.title, row.url);

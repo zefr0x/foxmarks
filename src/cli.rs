@@ -1,8 +1,5 @@
-use core::str::FromStr;
+use core::{fmt::Display, str::FromStr};
 use std::path::PathBuf;
-
-use clap::builder::NonEmptyStringValueParser;
-use clap::{Arg, ArgAction, Command, ValueEnum};
 
 #[derive(PartialEq, Eq, Clone)]
 pub enum FirefoxType {
@@ -24,17 +21,21 @@ impl FromStr for FirefoxType {
     }
 }
 
-impl ToString for FirefoxType {
-    fn to_string(&self) -> String {
-        match *self {
-            Self::Release => "Release".to_owned(),
-            Self::Esr => "Esr".to_owned(),
-            Self::Dev => "Dev".to_owned(),
-        }
+impl Display for FirefoxType {
+    fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
+        write!(
+            f,
+            "{}",
+            match *self {
+                Self::Release => "Release".to_owned(),
+                Self::Esr => "Esr".to_owned(),
+                Self::Dev => "Dev".to_owned(),
+            }
+        )
     }
 }
 
-impl ValueEnum for FirefoxType {
+impl clap::ValueEnum for FirefoxType {
     fn value_variants<'src>() -> &'src [Self] {
         &[Self::Release, Self::Esr, Self::Dev]
     }
@@ -45,7 +46,10 @@ impl ValueEnum for FirefoxType {
 }
 
 #[must_use]
-pub fn build() -> Command {
+pub fn build() -> clap::Command {
+    use clap::builder::NonEmptyStringValueParser;
+    use clap::{Arg, ArgAction, Command};
+
     Command::new(env!("CARGO_PKG_NAME"))
         .about(env!("CARGO_PKG_DESCRIPTION"))
         // FIXME:
@@ -124,7 +128,7 @@ pub fn build() -> Command {
                 .display_order(0),
         )
         .subcommand(
-            clap::Command::new("history")
+            Command::new("history")
                 .about("Get browsing history")
                 .display_order(1),
         )

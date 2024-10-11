@@ -53,8 +53,8 @@ unused_qualifications = "warn"
 variant_size_differences = "warn"
 
 [lints.clippy]
-pedantic = "warn"
-nursery = "warn"
+pedantic = { level = "warn", priority = -1 }
+nursery = { level = "warn", priority = -1 }
 alloc_instead_of_core = "warn"
 allow_attributes = "deny"
 allow_attributes_without_reason = "warn"
@@ -66,16 +66,14 @@ decimal_literal_representation = "warn"
 default_numeric_fallback = "warn"
 deref_by_slicing = "warn"
 empty_drop = "warn"
-# TODO: Enable after 1.77.0
-# empty_enum_variants_with_brackets = "deny"
+empty_enum_variants_with_brackets = "deny"
 empty_structs_with_brackets = "deny"
 error_impl_error = "deny"
 filetype_is_file = "warn"
 float_cmp_const = "deny"
 format_push_string = "warn"
 get_unwrap = "warn"
-# TODO: Enable after 1.76.0
-# infinite_loop = "warn"
+infinite_loop = "warn"
 let_underscore_untyped = "warn"
 lossy_float_literal = "warn"
 map_err_ignore = "warn"

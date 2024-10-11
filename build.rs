@@ -1,3 +1,5 @@
+#![allow(clippy::allow_attributes_without_reason)]
+
 use std::env;
 use std::fs;
 use std::io::Error;
@@ -20,14 +22,14 @@ fn main() -> Result<(), Error> {
 
     // HACK: Create a stamp file to detect where is the latest outdir.
     let stamp_path = outdir.join(format!("{name}-stamp"));
-    #[allow(clippy::unwrap_used)]
+    #[expect(clippy::unwrap_used)]
     fs::File::create(stamp_path).unwrap();
 
     let mut cmd = build();
 
     // Create directory for shell completions
     let completions_dir = outdir.join("shell_completions");
-    #[allow(clippy::unwrap_used)]
+    #[expect(clippy::unwrap_used)]
     fs::create_dir_all(&completions_dir).unwrap();
 
     // Generate shell completions
@@ -37,7 +39,7 @@ fn main() -> Result<(), Error> {
 
     // Create directory for man pages
     let man_dir = outdir.join("man_pages");
-    #[allow(clippy::unwrap_used)]
+    #[expect(clippy::unwrap_used)]
     fs::create_dir_all(&man_dir).unwrap();
 
     // Generate main man page

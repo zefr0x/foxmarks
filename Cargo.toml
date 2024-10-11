@@ -30,8 +30,6 @@ libsqlite_bundled = [ "rusqlite/bundled" ]
 [profile.release]
 lto = true
 codegen-units = 1
-panic = "abort"
-strip = true
 
 # TODO: Consider commented lints when they are stable.
 [lints.rust]

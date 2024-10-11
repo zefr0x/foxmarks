@@ -125,11 +125,19 @@ impl DataBase<NotConnected> {
     /// Since the database is locked when firefox is running, we need to copy it to a tmpfile to use it.
     fn get_temp_database(&self) -> NamedTempFile {
         #[expect(clippy::unwrap_used, reason = "Should panic if failed")]
-        let temp_database_file = NamedTempFile::new().unwrap();
+        let temp_database_file = NamedTempFile::new_in(dirs::cache_dir().unwrap()).unwrap();
 
-        // Copy the whole database file to a temp file.
         #[expect(clippy::unwrap_used, reason = "Should panic if failed")]
-        std::fs::copy(self.database_location.as_path(), temp_database_file.path()).unwrap();
+        let mut original_database_file =
+            std::fs::File::open(self.database_location.as_path()).unwrap();
+
+        // Copy the whole database file to the temp file.
+        #[expect(clippy::unwrap_used, reason = "Should panic if failed")]
+        std::io::copy(
+            &mut original_database_file,
+            &mut temp_database_file.as_file(),
+        )
+        .unwrap();
 
         temp_database_file
     }

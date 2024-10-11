@@ -1,5 +1,11 @@
 # Unreleased
 
+# 2.1.0
+
+## Added
+
+- `--firefox-home-path` CLI option
+
 # 2.0.3
 
 ## Dependencies

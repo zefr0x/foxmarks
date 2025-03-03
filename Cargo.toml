@@ -1,6 +1,6 @@
 [package]
 name = "foxmarks"
-version = "2.1.0"
+version = "2.1.1"
 authors = ["zefr0x"]
 edition = "2024"
 description = "A CLI read-only interface for firefox's bookmarks and history."

@@ -2,7 +2,7 @@
 name = "foxmarks"
 version = "2.1.0"
 authors = ["zefr0x"]
-edition = "2021"
+edition = "2024"
 description = "A CLI read-only interface for firefox's bookmarks and history."
 readme = "README.md"
 homepage = "https://github.com/zefr0x/foxmarks"
@@ -12,16 +12,16 @@ keywords = ["firefox", "bookmarks", "history", "cli"]
 categories = ["command-line-utilities", "database-implementations"]
 
 [dependencies]
-clap = { version = "4.5.20", features = ["string"]}
+clap = { version = "4.5.31", features = ["string"]}
 configparser = "3.1.0"
-dirs = "5.0.1"
-rusqlite = "0.32.1"
-tempfile = "3.13.0"
+dirs = "6.0.0"
+rusqlite = "0.33.0"
+tempfile = "3.17.1"
 
 [build-dependencies]
-clap = { version = "4.5.20", features = ["string"]}
-clap_complete = "4.5.33"
-clap_mangen = "0.2.24"
+clap = { version = "4.5.31", features = ["string"]}
+clap_complete = "4.5.46"
+clap_mangen = "0.2.26"
 
 [features]
 default = [ "libsqlite_bundled" ]
@@ -41,8 +41,8 @@ explicit_outlives_requirements = "warn"
 # must_not_suspend = "warn"
 non_ascii_idents = "forbid"
 # non_exhaustive_omitted_patterns = "warn"
-# unit_bindings = "warn"
-# unnameable_types = "warn"
+unit_bindings = "warn"
+unnameable_types = "warn"
 unsafe_code = "forbid"
 # unused_crate_dependencies = "warn"
 unused_lifetimes = "warn"
@@ -79,8 +79,7 @@ mem_forget = "warn"
 # multiple_inherent_impl = "warn"
 multiple_unsafe_ops_per_block = "deny"
 mutex_atomic = "warn"
-# TODO: Enable after false-positive is solved (https://github.com/rust-lang/rust-clippy/issues/9378)
-# pattern_type_mismatch = "warn"
+pattern_type_mismatch = "warn"
 pub_with_shorthand = "warn"
 rc_buffer = "warn"
 rc_mutex = "deny"

@@ -5,7 +5,7 @@ use std::fs;
 use std::io::Error;
 use std::path::Path;
 
-use clap_complete::{generate_to, Shell};
+use clap_complete::{Shell, generate_to};
 use clap_mangen::Man;
 
 include!("src/cli.rs");

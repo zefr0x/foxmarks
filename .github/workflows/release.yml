@@ -5,6 +5,8 @@
 # Reference: https://github.com/BurntSushi/ripgrep/blob/master/.github/workflows/release.yml
 
 name: release
+permissions:
+  "contents": "write"
 on:
   push:
     tags:
